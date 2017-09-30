@@ -61,20 +61,6 @@
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="pushButton_readFromExcel">
-      <property name="text">
-       <string>readFromExcel</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="pushButton_checkFolder">
-      <property name="text">
-       <string>checkFolder</string>
-      </property>
-     </widget>
-    </item>
-    <item>
      <widget class="QPushButton" name="pushButton_checkClipBoard">
       <property name="text">
        <string>checkClipBoard</string>

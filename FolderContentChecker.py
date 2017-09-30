@@ -6,18 +6,14 @@ Created on Wed Sep 27 18:45:46 2017
 """
 
 import sys
-import time
-from os import walk
 import os
-
 import pandas as pd
 
 # for PyQt 
-from PyQt4 import uic, QtCore, QtGui
+from PyQt4 import uic, QtGui
 from PyQt4.QtGui import QMainWindow, QApplication
 from PyQt4.QtGui import QTableWidgetItem
 from PyQt4.QtGui import QFileDialog
-from PyQt4.QtCore import QTimer
 
 
 form_class = uic.loadUiType(".\\FolderContentChecker.ui")[0]
@@ -26,35 +22,35 @@ class MyWindow(QMainWindow, form_class):
     def __init__(self):
         super(MyWindow,self).__init__()
         self.setupUi(self)
-        
+
+        # table widget init code
         self.tableWidget_FolderContentChecker.setColumnCount(50)
         self.tableWidget_FolderContentChecker.setRowCount(50)
         
-        self.pushButton_checkFoler.clicked.connect(self.checkFolder)
+        # push buttons init code
         self.pushButton_excelFileDialog.clicked.connect(self.excelFileDialog)
         self.pushButton_excelFolderDialog.clicked.connect(self.excelFolderDialog)
-        self.pushButton_readFromExcel.clicked.connect(self.readFromExcel)
-        self.pushButton_checkFolder.clicked.connect(self.checkFolder)
         self.pushButton_checkClipBoard.clicked.connect(self.checkClipBoard)
         self.pushButton_checkSelectedItemsInFolder.clicked.connect(self.checkSelectedItemsInFolder)
         
+        # line edit init code
         dir_path = os.path.dirname(os.path.realpath(__file__))
         self.lineEdit_currentFolder.setText(dir_path)
         
+        # set the shortcut ctrl+v for paste
+        QtGui.QShortcut(QtGui.QKeySequence('Ctrl+v'),self).activated.connect(self.checkClipBoard)
+        
     def checkFolder(self, filename, i_row, i_col):
-        n = 0
-        f = []
         #print "filename is 1: " + filename
         tempStr = str("")
         tempStr = self.lineEdit_currentFolder.text()
         dirpath = str("")
-        for (dirpath, dirnames, filenames) in walk(tempStr):
+        for (dirpath, dirnames, filenames) in os.walk(tempStr):
             print "type(dirpath):" +str(type(dirpath))
             print "type(dirnames):" +str(type(dirnames))
             print "type(filenames):" +str(type(filenames))
             print "type(tempStr):" +str(type(tempStr))
             #print "filenames: " + str(filenames)
-            f.extend(filenames)
             #print "filename is 2: " + filename
             for fname in filenames:
                 #print fname
@@ -62,7 +58,7 @@ class MyWindow(QMainWindow, form_class):
                     aItem = QTableWidgetItem()
                     aItem.setText(fname)
                     self.tableWidget_FolderContentChecker.setItem(i_row, i_col+1, aItem)
-                    
+             
     def checkClipBoard(self):
         clipboard_text = QtGui.QApplication.instance().clipboard().text()
         
@@ -105,25 +101,6 @@ class MyWindow(QMainWindow, form_class):
             #print type(i_row)
             #print type(i_column)
             self.checkFolder(item_text, i_row, i_column)
-            
-
-    def readFromExcel(self):
-        # Import the excel file and call it xls_file
-        xls_file = pd.ExcelFile(self.lineEdit_excelPath.text())
-        df = xls_file.parse('Sheet1')
-        df = df.dropna(how='all')     #drop only if ALL columns are NaN
-        df = df.fillna("")
-        self.tableWidget_FolderContentChecker.setColumnCount(len(df.columns))
-        self.tableWidget_FolderContentChecker.setRowCount(len(df.index))
-        for c in range(0, len(df.columns)+1):
-            for r in range(0, len(df.index)+1):
-                aItem = QTableWidgetItem()
-                try:
-                    aItem.setText(str(df.iloc[r][c]))
-                except:
-                    print "set error"
-                self.tableWidget_FolderContentChecker.setItem(r,c,aItem)
-
         
     def excelFileDialog(self):
         try:
@@ -144,6 +121,12 @@ class MyWindow(QMainWindow, form_class):
         except:
             print 'folder load error\n'
         self.lineEdit_currentFolder.setText(folder)
+        
+    def initShortcuts(self):
+        #self.shortcutPaste = PyQt4.QtGui.QShortcut(PyQt4.QtGui.QKeySequence(PyQt4.CTRL + PyQt4.Key_V), self)
+        #self.shortcutPaste.setContext(PyQt4.WidgetShortcut)
+        #self.shortcutPaste.activated.connect(self.checkClipBoard)
+        print 1
     
 if __name__ == "__main__":
     app = QApplication(sys.argv)
