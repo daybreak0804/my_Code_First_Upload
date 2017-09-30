@@ -122,11 +122,6 @@ class MyWindow(QMainWindow, form_class):
             print 'folder load error\n'
         self.lineEdit_currentFolder.setText(folder)
         
-    def initShortcuts(self):
-        #self.shortcutPaste = PyQt4.QtGui.QShortcut(PyQt4.QtGui.QKeySequence(PyQt4.CTRL + PyQt4.Key_V), self)
-        #self.shortcutPaste.setContext(PyQt4.WidgetShortcut)
-        #self.shortcutPaste.activated.connect(self.checkClipBoard)
-        print 1
     
 if __name__ == "__main__":
     app = QApplication(sys.argv)
